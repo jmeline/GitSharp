@@ -16,7 +16,7 @@ public static class Hasher
     public static async Task<string> HashObject(ObjectHeaderTypes objectHeader, string filename)
     {
         ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
-        const string nullByte = "\0";
+        const string nullByte = "\0"; // \x00
         var contents = await File.ReadAllTextAsync(filename);
         var contentLength = contents.Length;
         var type = objectHeader.ToString().ToLower();
