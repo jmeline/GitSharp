@@ -2,3 +2,5 @@
 GitSharp/bin
 GitSharp/obj
 myrepo
+GitSharp.Tests/bin/Debug/net9.0
+GitSharp.Tests/obj

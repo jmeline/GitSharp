@@ -1,3 +1,6 @@
+using System.Security.Cryptography;
+using System.Text;
+
 namespace GitSharp;
 
 public enum ObjectHeaderTypes
@@ -10,15 +13,26 @@ public enum ObjectHeaderTypes
 
 public static class Hasher
 {
-    public static string Serialize(ObjectHeaderTypes objectHeader, object data)
+    public static async Task<string> HashObject(ObjectHeaderTypes objectHeader, string filename)
     {
+        ArgumentException.ThrowIfNullOrEmpty(filename, nameof(filename));
+        const string nullByte = "\0";
+        var contents = await File.ReadAllTextAsync(filename);
+        var contentLength = contents.Length;
+        var type = objectHeader.ToString().ToLower();
         
-        return string.Empty;
+        // blob <length-of-content>\x00 <content>
+        var input = $"{type} {contentLength}{nullByte}{contents}";
+        var inputBytes = Encoding.UTF8.GetBytes(input);
+        // var hashBytes = SHA256.HashData(inputBytes);
+        var hashBytes = SHA1.HashData(inputBytes);
+        var hash = Convert.ToHexStringLower(hashBytes);
+        return hash;
     }
 
-    public static string Deserialize()
+    public static string GetObjectHashPath(string hash)
     {
-        return string.Empty;
-
-    }
+        ArgumentException.ThrowIfNullOrEmpty(hash, nameof(hash)); 
+        return Path.Combine(hash[..2], hash[2..]);
+    } 
 }
